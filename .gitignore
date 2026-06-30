@@ -16,6 +16,9 @@ agent.config
 # School documents (kept out of the public repo)
 *.docx
 
+# Project notes / assistant context (keep out of the published repo)
+CLAUDE.md
+
 # Editor / OS
 .vscode/
 .idea/
