@@ -18,9 +18,11 @@ agent.config
 
 # Project notes / assistant context (keep out of the published repo)
 CLAUDE.md
+STEPS FOR LINUX INSTALL.txt
 
 # Editor / OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+
