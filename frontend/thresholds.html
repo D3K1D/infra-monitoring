@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thresholds - Infrastructure Monitoring</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <span class="title-bar-text">Infrastructure Monitoring</span>
+        </div>
+
+        <nav class="menu-bar">
+            <a href="index.html">Dashboard</a>
+            <a href="alerts.html">Alerts</a>
+            <a href="thresholds.html" class="active">Thresholds</a>
+        </nav>
+
+        <div class="window-body">
+            <p class="muted">
+                Alerts fire when a reading reaches the warning or critical value (percent).
+            </p>
+
+            <div class="sunken-panel">
+                <table class="nodes">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Warning %</th>
+                            <th>Critical %</th>
+                            <th>Updated</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="threshold-rows">
+                        <tr><td colspan="5" class="muted">Loading thresholds...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span class="status-cell" id="last-updated">Loading...</span>
+            <span class="status-cell">Monitoring System v0.1</span>
+        </div>
+    </div>
+
+    <script src="js/util.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/thresholds.js"></script>
+</body>
+</html>

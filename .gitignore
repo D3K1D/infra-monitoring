@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Local secrets and machine-specific config (use the .example files as templates)
+.env
+agent.config
+
+# School documents (kept out of the public repo)
+*.docx
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

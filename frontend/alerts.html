@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts - Infrastructure Monitoring</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <span class="title-bar-text">Infrastructure Monitoring</span>
+        </div>
+
+        <nav class="menu-bar">
+            <a href="index.html">Dashboard</a>
+            <a href="alerts.html" class="active">Alerts</a>
+            <a href="thresholds.html">Thresholds</a>
+        </nav>
+
+        <div class="window-body">
+            <section class="controls">
+                <select id="status-filter">
+                    <option value="active">Active</option>
+                    <option value="acknowledged">Acknowledged</option>
+                    <option value="all">All</option>
+                </select>
+            </section>
+
+            <div class="sunken-panel">
+                <table class="nodes">
+                    <thead>
+                        <tr>
+                            <th>Severity</th>
+                            <th>Node</th>
+                            <th>Trigger</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alert-rows">
+                        <tr><td colspan="6" class="muted">Loading alerts...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span class="status-cell" id="last-updated">Loading...</span>
+            <span class="status-cell">Monitoring System v0.1</span>
+        </div>
+    </div>
+
+    <script src="js/util.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/alerts.js"></script>
+</body>
+</html>

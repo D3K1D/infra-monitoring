@@ -1,0 +1,205 @@
+/* Classic desktop-OS look: gray window chrome, beveled edges, system font, 2D. */
+
+:root {
+    --face: #c0c0c0;        /* window/button face */
+    --face-light: #dfdfdf;
+    --shadow: #808080;
+    --dark: #0a0a0a;
+    --white: #ffffff;
+    --title: #000080;       /* active title bar */
+    --desktop: #008080;     /* classic teal desktop */
+    --text: #000000;
+}
+
+* { box-sizing: border-box; border-radius: 0 !important; }
+
+body {
+    margin: 0;
+    padding: 24px;
+    background: var(--desktop);
+    color: var(--text);
+    font-family: "Tahoma", "MS Sans Serif", "Segoe UI", Verdana, sans-serif;
+    font-size: 12px;
+}
+
+/* Raised 3D bevel (windows, column headers) */
+.window, table.nodes th {
+    box-shadow:
+        inset -1px -1px var(--dark),
+        inset 1px 1px var(--white),
+        inset -2px -2px var(--shadow),
+        inset 2px 2px var(--face-light);
+}
+
+/* Sunken 3D bevel (input fields, panels, status cells) */
+.controls input, .controls select, .sunken-panel, .card, .status-cell {
+    box-shadow:
+        inset -1px -1px var(--white),
+        inset 1px 1px var(--shadow),
+        inset -2px -2px var(--face-light),
+        inset 2px 2px var(--dark);
+}
+
+.window {
+    max-width: 980px;
+    margin: 0 auto;
+    background: var(--face);
+    padding: 3px;
+}
+
+/* Title bar */
+.title-bar {
+    background: var(--title);
+    color: var(--white);
+    padding: 4px 6px;
+}
+
+.title-bar-text { font-weight: bold; letter-spacing: 0.3px; }
+
+/* Page navigation menu bar */
+.menu-bar { display: flex; gap: 2px; padding: 2px 4px; background: var(--face); }
+
+.menu-bar a {
+    padding: 3px 10px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.menu-bar a:hover { background: var(--title); color: var(--white); }
+.menu-bar a.active { font-weight: bold; text-decoration: underline; }
+
+.window-body { padding: 10px; }
+
+/* Summary cards as sunken readout panels */
+.summary { display: flex; gap: 10px; margin-bottom: 12px; }
+
+.card {
+    flex: 1;
+    background: var(--white);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.card-value { font-size: 1.9rem; font-weight: bold; color: var(--title); line-height: 1; }
+.card-label { color: #404040; font-size: 11px; }
+
+/* Controls */
+.controls { display: flex; gap: 8px; margin-bottom: 12px; }
+
+.controls input, .controls select {
+    background: var(--white);
+    border: none;
+    padding: 4px 6px;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--text);
+}
+
+.controls input { flex: 1; }
+
+/* Node table inside a sunken panel */
+.sunken-panel { background: var(--white); padding: 2px; }
+
+table.nodes { width: 100%; border-collapse: collapse; background: var(--white); }
+
+table.nodes th {
+    background: var(--face);
+    text-align: left;
+    font-weight: normal;
+    padding: 3px 8px;
+    color: var(--text);
+}
+
+table.nodes td {
+    padding: 4px 8px;
+    border-bottom: 1px solid #e6e6e6;
+    font-size: 12px;
+}
+
+table.nodes tbody tr:hover td { background: var(--title); color: var(--white); }
+.muted { color: var(--shadow); }
+
+/* Status badges: small label with a colored indicator dot */
+.badge {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+.badge::before { content: "\25CF  "; }
+.badge.online { color: #008000; }
+.badge.warning { color: #9a7000; }
+.badge.offline { color: #b00000; }
+.badge.critical { color: #b00000; }
+
+/* Alert status labels (no indicator dot) */
+.badge.active { color: #b00000; }
+.badge.active::before { content: ""; }
+.badge.acknowledged { color: #404040; }
+.badge.acknowledged::before { content: ""; }
+
+/* Buttons reuse the raised window bevel; disabled buttons look sunken/flat */
+button {
+    background: var(--face);
+    border: none;
+    padding: 3px 12px;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    box-shadow:
+        inset -1px -1px var(--dark),
+        inset 1px 1px var(--white),
+        inset -2px -2px var(--shadow),
+        inset 2px 2px var(--face-light);
+}
+
+button:active:not(:disabled) {
+    box-shadow:
+        inset -1px -1px var(--white),
+        inset 1px 1px var(--shadow),
+        inset -2px -2px var(--face-light),
+        inset 2px 2px var(--dark);
+}
+
+button:disabled { color: var(--shadow); cursor: default; }
+
+/* Inline form message (threshold save feedback) */
+.form-message { margin-left: 8px; font-size: 11px; }
+.form-message.ok { color: #008000; }
+.form-message.error { color: #b00000; }
+
+/* Narrow numeric inputs on the thresholds page */
+table.nodes input[type="number"] {
+    width: 70px;
+    background: var(--white);
+    border: none;
+    padding: 3px 5px;
+    font-family: inherit;
+    font-size: 12px;
+    box-shadow:
+        inset -1px -1px var(--white),
+        inset 1px 1px var(--shadow),
+        inset -2px -2px var(--face-light),
+        inset 2px 2px var(--dark);
+}
+
+/* Status bar */
+.status-bar {
+    display: flex;
+    gap: 3px;
+    padding: 3px;
+    background: var(--face);
+}
+
+.status-cell {
+    background: var(--face);
+    padding: 2px 6px;
+    font-size: 11px;
+    color: #303030;
+}
+
+.status-cell:first-child { flex: 1; }

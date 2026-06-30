@@ -1,0 +1,10 @@
+# Copy to agent.config and edit. The agent reads these as environment-style values.
+# API_URL   = base address of the backend
+# NODE_NAME = label for this machine (defaults to the real hostname if left blank)
+# LOCATION  = rack / physical location label
+# INTERVAL  = seconds between reports
+
+API_URL=http://localhost:8000
+NODE_NAME=
+LOCATION=Lab Rack 1
+INTERVAL=15
