@@ -114,8 +114,23 @@ what was decided during implementation.
 
 ## Known gaps to address when touched
 
-- `renderRows()` in app.js injects hostname/os/location into innerHTML unescaped.
-  When adding any user-entered or richer data to the table (or building the alerts
-  page), add a small `escapeHtml()` helper and use it for all interpolated strings.
 - The `metrics` table grows ~5,760 rows/node/day at a 15s interval — fine for a
   semester; do not build retention/pruning unless asked.
+
+## Version control / repo hygiene (added 2026-06-30)
+
+- Repo: github.com/D3K1D/infra-monitoring (Private for now; goes Public to show
+  off later). Commits are authored as Andrew <D3K1D@users.noreply.github.com> via
+  per-repo `git config` — never add Claude/AI as author or co-author, and keep
+  CLAUDE.md and these notes out of the published repo.
+- `.gitignore` (added 2026-06-30) excludes venv/, __pycache__/, .env, agent.config,
+  *.docx, and CLAUDE.md. The initial push predated/ignored this, so those files got
+  TRACKED. `.gitignore` does not untrack already-committed files: fix with
+  `git rm -r --cached . && git add . && git commit` then push.
+- SECURITY: if backend/.env (DB password + SECRET_KEY) was ever committed, it stays
+  in git history even after untracking. Before going Public, rotate SECRET_KEY (and
+  the MySQL password if real) and/or scrub history. Verify with
+  `git ls-files | findstr .env` — only `.env.example` should appear.
+- TODO (later cleanup pass before Public release): tidy the project tree, confirm
+  no secrets or machine-specific paths are tracked, and review README/RUN for
+  anything personal. Do this when explicitly asked, not mid-feature.
