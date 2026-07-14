@@ -23,12 +23,17 @@ function createCharts() {
                 borderColor: def.color,
                 borderWidth: 1.5,
                 pointRadius: 0,
+                pointHoverRadius: 3,
+                pointHoverBackgroundColor: def.color,
                 fill: false,
             }] },
             options: {
                 animation: false,
                 responsive: true,
                 maintainAspectRatio: false,
+                // Snap the tooltip to the nearest reading anywhere in the
+                // chart area instead of requiring the cursor to touch the line.
+                interaction: { mode: "index", intersect: false },
                 plugins: { legend: { display: false } },
                 scales: {
                     y: { min: 0, max: 100, ticks: { font: { size: 10 } } },
