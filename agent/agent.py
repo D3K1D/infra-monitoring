@@ -44,16 +44,33 @@ def get_ip_address():
 
 
 def collect_metrics(node_name, location):
-    """Read real system metrics from this machine."""
+    """Read real system metrics from this machine.
+
+    disk_percent is how FULL the drive is; disk_io_percent is how BUSY it is
+    (share of the sample window spent on reads/writes, like Task Manager's
+    disk column). Both are measured over the same one-second window as CPU.
+    """
+    io_before = psutil.disk_io_counters()
+    cpu_percent = psutil.cpu_percent(interval=1)  # blocks for the 1s window
+    io_after = psutil.disk_io_counters()
+
+    disk_io_percent = 0.0
+    if io_before is not None and io_after is not None:
+        busy_ms = (io_after.read_time - io_before.read_time) + (
+            io_after.write_time - io_before.write_time
+        )
+        # Overlapping/queued IO can exceed the wall-clock window; cap at 100.
+        disk_io_percent = min(busy_ms / 1000 * 100, 100.0)
+
     return {
         "hostname": node_name or socket.gethostname(),
         "ip_address": get_ip_address(),
         "os": f"{platform.system()} {platform.release()}",
         "location": location or None,
-        # interval=1 makes psutil measure CPU over a one-second window.
-        "cpu_percent": psutil.cpu_percent(interval=1),
+        "cpu_percent": cpu_percent,
         "memory_percent": psutil.virtual_memory().percent,
         "disk_percent": psutil.disk_usage("/").percent,
+        "disk_io_percent": round(disk_io_percent, 1),
     }
 
 
@@ -76,7 +93,8 @@ def main():
                 print(
                     f"Sent: cpu={payload['cpu_percent']}% "
                     f"mem={payload['memory_percent']}% "
-                    f"disk={payload['disk_percent']}%"
+                    f"disk={payload['disk_percent']}% "
+                    f"disk_io={payload['disk_io_percent']}%"
                 )
             else:
                 print(f"Backend returned {response.status_code}: {response.text}")

@@ -25,10 +25,25 @@ function renderSummary(nodes) {
     document.getElementById("count-alerts").textContent = activeAlertCount;
 }
 
+// Sunken progress bar showing how full the node's disk is. Fill and text color
+// step green -> amber -> red at the default disk warning/critical thresholds.
+function diskSpaceBar(percent) {
+    if (percent === null || percent === undefined) {
+        return '<span class="muted">—</span>';
+    }
+    const level = percent >= 90 ? "high" : percent >= 80 ? "mid" : "low";
+    const width = Math.min(Math.max(percent, 0), 100);
+    return `
+        <div class="disk-cell">
+            <div class="disk-bar"><div class="disk-fill ${level}" style="width: ${width}%"></div></div>
+            <span class="disk-label ${level}">${percent.toFixed(1)}%</span>
+        </div>`;
+}
+
 function renderRows(nodes) {
     const tbody = document.getElementById("node-rows");
     if (nodes.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="muted">No nodes match.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="muted">No nodes match.</td></tr>';
         return;
     }
     tbody.innerHTML = nodes
@@ -36,6 +51,7 @@ function renderRows(nodes) {
             (node) => `
         <tr>
             <td><span class="badge ${escapeHtml(node.status)}">${escapeHtml(node.status)}</span></td>
+            <td>${diskSpaceBar(node.disk_percent)}</td>
             <td>${escapeHtml(node.hostname)}</td>
             <td>${escapeHtml(node.ip_address) || "—"}</td>
             <td>${escapeHtml(node.os) || "—"}</td>

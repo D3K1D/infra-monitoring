@@ -34,6 +34,7 @@ def store_metric(db: Session, data: schemas.MetricIn) -> models.Metric:
         cpu_percent=data.cpu_percent,
         memory_percent=data.memory_percent,
         disk_percent=data.disk_percent,
+        disk_io_percent=data.disk_io_percent,
     )
     db.add(metric)
     db.flush()  # assigns metric.id so alerts can reference the reading's node

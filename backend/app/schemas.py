@@ -13,12 +13,15 @@ class MetricIn(BaseModel):
     cpu_percent: float
     memory_percent: float
     disk_percent: float
+    # Defaults to 0 so an agent that hasn't been updated yet can still report.
+    disk_io_percent: float = 0.0
 
 
 class MetricOut(BaseModel):
     cpu_percent: float
     memory_percent: float
     disk_percent: float
+    disk_io_percent: float
     recorded_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
@@ -33,6 +36,8 @@ class NodeOut(BaseModel):
     location: Optional[str]
     status: str
     last_seen: Optional[datetime]
+    # From the node's most recent reading; None until it has reported once.
+    disk_percent: Optional[float] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -48,6 +53,7 @@ class AlertOut(BaseModel):
     created_at: datetime
     acknowledged_at: Optional[datetime]
     acknowledged_by: Optional[int]
+    cleared_at: Optional[datetime]
 
 
 # ----- Thresholds (admin-managed) -----

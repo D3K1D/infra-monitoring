@@ -133,6 +133,33 @@ table.nodes td {
 table.nodes tbody tr:hover td { background: var(--title); color: var(--white); }
 .muted { color: var(--shadow); }
 
+/* Disk space cell: classic sunken progress bar + colored percentage */
+.disk-cell { display: flex; align-items: center; gap: 6px; }
+
+.disk-bar {
+    width: 80px;
+    height: 12px;
+    background: var(--white);
+    box-shadow:
+        inset -1px -1px var(--white),
+        inset 1px 1px var(--shadow),
+        inset -2px -2px var(--face-light),
+        inset 2px 2px var(--dark);
+}
+
+.disk-fill { height: 100%; }
+.disk-fill.low { background: #008000; }
+.disk-fill.mid { background: #9a7000; }
+.disk-fill.high { background: #b00000; }
+
+.disk-label { font-size: 11px; font-weight: bold; }
+.disk-label.low { color: #008000; }
+.disk-label.mid { color: #9a7000; }
+.disk-label.high { color: #b00000; }
+
+/* Keep the bar colors readable on the navy row-hover highlight */
+table.nodes tbody tr:hover .disk-label { color: var(--white); }
+
 /* Status badges: small label with a colored indicator dot */
 .badge {
     font-weight: bold;

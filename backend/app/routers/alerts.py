@@ -24,6 +24,7 @@ def _to_out(alert: models.Alert) -> schemas.AlertOut:
         created_at=alert.created_at,
         acknowledged_at=alert.acknowledged_at,
         acknowledged_by=alert.acknowledged_by,
+        cleared_at=alert.cleared_at,
     )
 
 

@@ -11,7 +11,7 @@ router = APIRouter(
     prefix="/api", tags=["thresholds"], dependencies=[Depends(get_current_user)]
 )
 
-VALID_METRIC_TYPES = ("cpu", "memory", "disk")
+VALID_METRIC_TYPES = ("cpu", "memory", "disk", "disk_io")
 
 
 @router.get("/thresholds", response_model=List[schemas.ThresholdOut])
