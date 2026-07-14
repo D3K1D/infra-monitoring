@@ -5,8 +5,11 @@ from sqlalchemy.orm import Session
 
 from .. import models, schemas
 from ..database import get_db
+from ..deps import get_current_user
 
-router = APIRouter(prefix="/api", tags=["nodes"])
+router = APIRouter(
+    prefix="/api", tags=["nodes"], dependencies=[Depends(get_current_user)]
+)
 
 
 @router.get("/nodes", response_model=List[schemas.NodeOut])

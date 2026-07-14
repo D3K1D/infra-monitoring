@@ -1,11 +1,14 @@
 import asyncio
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
-from .routers import alerts, metrics, nodes, thresholds
+from .routers import alerts, auth, metrics, nodes, thresholds
 from .services import alert_service
+
+FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend"
 
 
 @asynccontextmanager
@@ -18,15 +21,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Data Center Monitoring API", lifespan=lifespan)
 
-# The dashboard is served from a different origin during development, so allow
-# cross-origin requests. Tighten this list before any real deployment.
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
+app.include_router(auth.router)
 app.include_router(metrics.router)
 app.include_router(nodes.router)
 app.include_router(alerts.router)
@@ -36,3 +31,8 @@ app.include_router(thresholds.router)
 @app.get("/api/health")
 def health_check():
     return {"status": "ok"}
+
+
+# Serve the dashboard from the same origin as the API. Mounted last so /api/*
+# keeps routing to the routers above; everything else falls through to files.
+app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")

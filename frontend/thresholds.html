@@ -16,11 +16,13 @@
             <a href="index.html">Dashboard</a>
             <a href="alerts.html">Alerts</a>
             <a href="thresholds.html" class="active">Thresholds</a>
+            <span class="menu-session" id="session-info"></span>
         </nav>
 
         <div class="window-body">
             <p class="muted">
                 Alerts fire when a reading reaches the warning or critical value (percent).
+                <span id="readonly-note"></span>
             </p>
 
             <div class="sunken-panel">
@@ -49,6 +51,7 @@
 
     <script src="js/util.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/session.js"></script>
     <script src="js/thresholds.js"></script>
 </body>
 </html>

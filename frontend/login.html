@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In - Infrastructure Monitoring</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="window login-window">
+        <div class="title-bar">
+            <span class="title-bar-text">Infrastructure Monitoring - Log In</span>
+        </div>
+
+        <div class="window-body">
+            <form id="login-form" class="auth-form">
+                <h2>Log in</h2>
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" autocomplete="username" required>
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" autocomplete="current-password" required>
+                <div class="auth-actions">
+                    <button type="submit">Log in</button>
+                    <span class="form-message" id="login-message"></span>
+                </div>
+            </form>
+
+            <hr>
+
+            <form id="register-form" class="auth-form">
+                <h2>Create an account</h2>
+                <p class="muted">
+                    Password must be at least 8 characters. New accounts are
+                    technicians; the first account created becomes the admin.
+                </p>
+                <label for="register-username">Username</label>
+                <input type="text" id="register-username" autocomplete="username" required>
+                <label for="register-password">Password</label>
+                <input type="password" id="register-password" autocomplete="new-password" required>
+                <div class="auth-actions">
+                    <button type="submit">Create account</button>
+                    <span class="form-message" id="register-message"></span>
+                </div>
+            </form>
+        </div>
+
+        <div class="status-bar">
+            <span class="status-cell">Monitoring System v0.1</span>
+        </div>
+    </div>
+
+    <script src="js/util.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/login.js"></script>
+</body>
+</html>

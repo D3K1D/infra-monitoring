@@ -14,6 +14,7 @@ def load_config():
     """Read settings from agent.config (KEY=VALUE lines), falling back to defaults."""
     config = {
         "API_URL": "http://localhost:8000",
+        "API_KEY": "",
         "NODE_NAME": "",
         "LOCATION": "",
         "INTERVAL": "15",
@@ -61,13 +62,16 @@ def main():
     api_url = config["API_URL"].rstrip("/")
     endpoint = f"{api_url}/api/metrics"
     interval = int(config["INTERVAL"])
+    headers = {"X-API-Key": config["API_KEY"]}
 
+    if not config["API_KEY"]:
+        print("Warning: API_KEY is not set in agent.config; the backend will reject reports.")
     print(f"Agent starting. Reporting to {endpoint} every {interval}s.")
 
     while True:
         payload = collect_metrics(config["NODE_NAME"], config["LOCATION"])
         try:
-            response = requests.post(endpoint, json=payload, timeout=10)
+            response = requests.post(endpoint, json=payload, headers=headers, timeout=10)
             if response.status_code == 201:
                 print(
                     f"Sent: cpu={payload['cpu_percent']}% "

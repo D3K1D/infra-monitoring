@@ -5,8 +5,11 @@ from sqlalchemy.orm import Session
 
 from .. import models, schemas
 from ..database import get_db
+from ..deps import get_current_user, require_admin
 
-router = APIRouter(prefix="/api", tags=["thresholds"])
+router = APIRouter(
+    prefix="/api", tags=["thresholds"], dependencies=[Depends(get_current_user)]
+)
 
 VALID_METRIC_TYPES = ("cpu", "memory", "disk")
 
@@ -17,13 +20,17 @@ def list_thresholds(db: Session = Depends(get_db)):
     return db.query(models.Threshold).order_by(models.Threshold.metric_type).all()
 
 
-@router.put("/thresholds/{metric_type}", response_model=schemas.ThresholdOut)
+@router.put(
+    "/thresholds/{metric_type}",
+    response_model=schemas.ThresholdOut,
+    dependencies=[Depends(require_admin)],
+)
 def update_threshold(
     metric_type: str,
     payload: schemas.ThresholdUpdate,
     db: Session = Depends(get_db),
 ):
-    """Update one metric's warning/critical limits. Restricted to admins once auth lands."""
+    """Update one metric's warning/critical limits. Admin only."""
     if metric_type not in VALID_METRIC_TYPES:
         raise HTTPException(status_code=404, detail="Unknown metric type")
     if payload.warning_value > payload.critical_value:

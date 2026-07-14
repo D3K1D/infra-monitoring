@@ -13,9 +13,10 @@ backend/      FastAPI app, database models, API routes
     database.py          SQLAlchemy engine and session
     models.py            users, nodes, metrics, thresholds, alerts
     schemas.py           Pydantic request/response models
-    security.py          password hashing
-    main.py              app entry point + CORS + health check
-    routers/             API endpoints (metrics, nodes, alerts, thresholds)
+    security.py          password hashing + JWT session tokens
+    deps.py              auth dependencies (current user, admin, agent key)
+    main.py              app entry point, health check, static frontend serving
+    routers/             API endpoints (auth, metrics, nodes, alerts, thresholds)
     services/            business logic (metric ingestion, alert engine)
 agent/        psutil metric agent that runs on each monitored machine
 database/     schema.sql to create the MySQL tables
@@ -34,7 +35,7 @@ mysql -u root -p < database/schema.sql
 cd backend
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env        # then edit DB credentials and SECRET_KEY
+cp .env.example .env        # then edit DB credentials, SECRET_KEY, AGENT_API_KEY
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 Check it: open http://localhost:8000/api/health — should return `{"status":"ok"}`.
@@ -44,26 +45,27 @@ Interactive API docs are at http://localhost:8000/docs.
 ```bash
 cd agent
 pip install -r requirements.txt
-cp agent.config.example agent.config   # set API_URL to the backend address
+cp agent.config.example agent.config   # set API_URL and API_KEY (= AGENT_API_KEY)
 python3 agent.py
 ```
 
-### 4. Frontend
-Serve the `frontend/` folder with any static server, e.g.:
-```bash
-cd frontend
-python3 -m http.server 5500
-```
-Open http://localhost:5500.
+### 4. Dashboard
+The backend serves the frontend on the same port — open http://localhost:8000
+(no separate static server). Register an account on the login page; the first
+account created becomes the admin, later accounts are technicians.
 
 ## Status
 
-Foundation is in place: database schema, the metric agent, and the dashboard
-scaffold. The backend handles metric ingestion and node listing, and now includes
-the alerts engine: incoming readings are checked against the thresholds table,
-deduplicated alerts are raised on warning/critical crossings, a background task
-marks nodes offline on missed check-ins, and the API exposes alert listing,
-acknowledgement, and threshold management (`/api/alerts`, `/api/thresholds`).
+The full monitoring pipeline works end to end: agents report CPU/memory/disk to
+the backend, readings are stored in MySQL and checked against thresholds,
+deduplicated alerts fire on warning/critical crossings, and a background task
+marks nodes offline on missed check-ins. The dashboard shows nodes, alerts
+(with acknowledgment), and admin-editable thresholds.
 
-Next steps: the dashboard alerts page and threshold-management UI, then
-authentication with role-based access, then the Chart.js history charts.
+Authentication is in place: registration and login with bcrypt-hashed passwords,
+JWT sessions in HttpOnly cookies, role-based access (admin vs technician — only
+admins can change thresholds), and agents authenticate with a shared X-API-Key.
+The frontend is served by FastAPI on the same origin as the API.
+
+Next steps: Chart.js history charts and the uptime summary, then deployment to
+the Ubuntu server.

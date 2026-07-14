@@ -69,6 +69,17 @@ body {
 .menu-bar a:hover { background: var(--title); color: var(--white); }
 .menu-bar a.active { font-weight: bold; text-decoration: underline; }
 
+/* Logged-in user + logout link, pushed to the right end of the menu bar */
+.menu-session {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 4px;
+}
+
+.menu-session span { color: #404040; }
+
 .window-body { padding: 10px; }
 
 /* Summary cards as sunken readout panels */
@@ -185,6 +196,37 @@ table.nodes input[type="number"] {
         inset 1px 1px var(--shadow),
         inset -2px -2px var(--face-light),
         inset 2px 2px var(--dark);
+}
+
+/* Login page: narrow window with stacked label/input forms */
+.login-window { max-width: 380px; margin-top: 60px; }
+
+.auth-form h2 { font-size: 13px; margin: 0 0 8px; }
+
+.auth-form label { display: block; margin: 8px 0 2px; }
+
+.auth-form input {
+    display: block;
+    width: 100%;
+    background: var(--white);
+    border: none;
+    padding: 4px 6px;
+    font-family: inherit;
+    font-size: 12px;
+    box-shadow:
+        inset -1px -1px var(--white),
+        inset 1px 1px var(--shadow),
+        inset -2px -2px var(--face-light),
+        inset 2px 2px var(--dark);
+}
+
+.auth-actions { margin-top: 10px; display: flex; align-items: center; }
+
+.window-body hr {
+    border: none;
+    border-top: 1px solid var(--shadow);
+    border-bottom: 1px solid var(--white);
+    margin: 14px 0;
 }
 
 /* Status bar */

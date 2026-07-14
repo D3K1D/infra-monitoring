@@ -1,10 +1,12 @@
 # Copy to agent.config and edit. The agent reads these as environment-style values.
 # API_URL   = base address of the backend
+# API_KEY   = must match AGENT_API_KEY in the backend .env
 # NODE_NAME = label for this machine (defaults to the real hostname if left blank)
 # LOCATION  = rack / physical location label
 # INTERVAL  = seconds between reports
 
 API_URL=http://localhost:8000
+API_KEY=change_me_to_match_backend
 NODE_NAME=
 LOCATION=Lab Rack 1
 INTERVAL=15

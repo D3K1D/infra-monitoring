@@ -6,8 +6,11 @@ from sqlalchemy.orm import Session
 
 from .. import models, schemas
 from ..database import get_db
+from ..deps import get_current_user
 
-router = APIRouter(prefix="/api", tags=["alerts"])
+router = APIRouter(
+    prefix="/api", tags=["alerts"], dependencies=[Depends(get_current_user)]
+)
 
 
 def _to_out(alert: models.Alert) -> schemas.AlertOut:
@@ -38,7 +41,11 @@ def list_alerts(
 
 
 @router.post("/alerts/{alert_id}/acknowledge", response_model=schemas.AlertOut)
-def acknowledge_alert(alert_id: int, db: Session = Depends(get_db)):
+def acknowledge_alert(
+    alert_id: int,
+    db: Session = Depends(get_db),
+    user: models.User = Depends(get_current_user),
+):
     """Mark an alert acknowledged. Idempotent if it is already acknowledged."""
     alert = db.query(models.Alert).filter(models.Alert.id == alert_id).first()
     if alert is None:
@@ -47,7 +54,7 @@ def acknowledge_alert(alert_id: int, db: Session = Depends(get_db)):
     if alert.status != "acknowledged":
         alert.status = "acknowledged"
         alert.acknowledged_at = datetime.now()
-        # acknowledged_by is filled with the logged-in user once auth is added.
+        alert.acknowledged_by = user.id
         db.commit()
         db.refresh(alert)
     return _to_out(alert)

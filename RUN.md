@@ -1,8 +1,9 @@
 # Running the Monitoring System (development)
 
-Three programs run at the same time during development, each in its own
+Two programs run at the same time during development, each in its own
 PowerShell terminal, started from the project root. MySQL runs in the background
-as a Windows service.
+as a Windows service. The backend serves the dashboard itself, so there is no
+separate static file server anymore.
 
 First-time setup (venv, `.env`, and loading the schema) is covered in README.md.
 Once that is done, the steps below are all you need each time — you do not
@@ -26,26 +27,29 @@ python agent.py
 ```
 Prints a "Sent: cpu=...% mem=...% disk=...%" line every 15 seconds.
 
-**Terminal 3 - Dashboard**
-```powershell
-cd frontend
-py -3.12 -m http.server 5500
-```
-Open http://localhost:5500
+**Dashboard**
+
+Open http://localhost:8000 (or http://<server-ip>:8000 from another device on
+the LAN). The backend serves the frontend files directly. You will be sent to
+the login page; the first account registered becomes the admin, everyone after
+is a technician.
 
 ## Stop
 
-Press Ctrl+C in each of the three terminals (or just close them). All code and
+Press Ctrl+C in each of the two terminals (or just close them). All code and
 config is saved on disk, and node/metric data persists in MySQL.
 
 ## Notes
 
-- The dashboard now has three pages, reachable from the menu bar at the top:
+- The dashboard has three pages, reachable from the menu bar at the top:
   Dashboard (nodes), Alerts (list + acknowledge), and Thresholds (edit limits).
-  They are all served by the same static server above.
 - If activating the venv is blocked ("running scripts is disabled"), run this
   once in that terminal, then activate again:
   `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
 - MySQL starts automatically with Windows; no need to start or stop it manually.
 - First-time-only setup (already done): create the venv, `pip install -r requirements.txt`,
   copy `.env.example` to `.env`, and load `database/schema.sql` into MySQL.
+- Auth setup (one time after the auth feature): add `AGENT_API_KEY=<random string>`
+  to `backend/.env`, and set the SAME value as `API_KEY=` in `agent.config` on every
+  machine running the agent (desktop AND laptop) — otherwise agents get 401s.
+  Generate one with: `python -c "import secrets; print(secrets.token_hex(32))"`.

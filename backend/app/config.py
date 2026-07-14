@@ -10,6 +10,7 @@ class Settings(BaseSettings):
 
     secret_key: str = "change_me"
     access_token_expire_minutes: int = 60
+    agent_api_key: str = ""
 
     offline_timeout_seconds: int = 60
 

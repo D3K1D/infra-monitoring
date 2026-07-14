@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 # ----- Metrics sent in by an agent -----
@@ -65,11 +65,16 @@ class ThresholdUpdate(BaseModel):
     critical_value: float
 
 
-# ----- Users (auth wiring comes next) -----
+# ----- Users / auth -----
+# Role is assigned server-side (first user = admin), never taken from the client.
 class UserCreate(BaseModel):
+    username: str = Field(min_length=3, max_length=50)
+    password: str = Field(min_length=8)
+
+
+class LoginIn(BaseModel):
     username: str
     password: str
-    role: str = "technician"
 
 
 class UserOut(BaseModel):

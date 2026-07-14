@@ -20,10 +20,24 @@ function renderRows(thresholds) {
         .join("");
 }
 
+// Technicians get a read-only view; the backend rejects their PUTs anyway,
+// so this is presentation, not the security boundary.
+function makeReadOnly() {
+    document
+        .querySelectorAll("#threshold-rows input, #threshold-rows button")
+        .forEach((el) => (el.disabled = true));
+    document.getElementById("readonly-note").textContent =
+        "Read-only: only admins can change thresholds.";
+}
+
 async function load() {
     try {
-        const thresholds = await fetchThresholds();
+        const [thresholds, user] = await Promise.all([
+            fetchThresholds(),
+            sessionUserPromise,
+        ]);
         renderRows(thresholds);
+        if (user.role !== "admin") makeReadOnly();
         document.getElementById("last-updated").textContent =
             `Loaded ${new Date().toLocaleTimeString()}`;
     } catch (err) {

@@ -3,9 +3,13 @@ from sqlalchemy.orm import Session
 
 from .. import schemas
 from ..database import get_db
+from ..deps import require_agent_key
 from ..services import metric_service
 
-router = APIRouter(prefix="/api", tags=["metrics"])
+# Ingest is authenticated by the shared agent key, not a user session.
+router = APIRouter(
+    prefix="/api", tags=["metrics"], dependencies=[Depends(require_agent_key)]
+)
 
 
 @router.post("/metrics", status_code=status.HTTP_201_CREATED)
