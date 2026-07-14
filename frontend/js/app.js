@@ -52,7 +52,7 @@ function renderRows(nodes) {
         <tr>
             <td><span class="badge ${escapeHtml(node.status)}">${escapeHtml(node.status)}</span></td>
             <td>${diskSpaceBar(node.disk_percent)}</td>
-            <td>${escapeHtml(node.hostname)}</td>
+            <td><a class="node-link" href="node.html?id=${node.id}">${escapeHtml(node.hostname)}</a></td>
             <td>${escapeHtml(node.ip_address) || "—"}</td>
             <td>${escapeHtml(node.os) || "—"}</td>
             <td>${escapeHtml(node.location) || "—"}</td>
@@ -70,12 +70,15 @@ function render() {
 
 async function refresh() {
     try {
-        const [nodes, activeAlerts] = await Promise.all([
+        const [nodes, activeAlerts, summary] = await Promise.all([
             fetchNodes(),
             fetchAlerts("active"),
+            fetchSummary(1440),
         ]);
         allNodes = nodes;
         activeAlertCount = activeAlerts.length;
+        document.getElementById("uptime").textContent =
+            summary.uptime_percent === null ? "—" : `${summary.uptime_percent}%`;
         render();
         document.getElementById("last-updated").textContent =
             `Updated ${new Date().toLocaleTimeString()}`;

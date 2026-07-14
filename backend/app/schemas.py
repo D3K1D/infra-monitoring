@@ -71,6 +71,18 @@ class ThresholdUpdate(BaseModel):
     critical_value: float
 
 
+# ----- Dashboard summary -----
+class SummaryOut(BaseModel):
+    total_nodes: int
+    online: int
+    warning: int
+    offline: int
+    active_alerts: int
+    # None until at least one node has existed long enough to expect readings.
+    uptime_percent: Optional[float]
+    window_minutes: int
+
+
 # ----- Users / auth -----
 # Role is assigned server-side (first user = admin), never taken from the client.
 class UserCreate(BaseModel):

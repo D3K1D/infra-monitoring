@@ -16,7 +16,7 @@ backend/      FastAPI app, database models, API routes
     security.py          password hashing + JWT session tokens
     deps.py              auth dependencies (current user, admin, agent key)
     main.py              app entry point, health check, static frontend serving
-    routers/             API endpoints (auth, metrics, nodes, alerts, thresholds)
+    routers/             API endpoints (auth, metrics, nodes, alerts, thresholds, summary)
     services/            business logic (metric ingestion, alert engine)
 agent/        psutil metric agent that runs on each monitored machine
 database/     schema.sql to create the MySQL tables
@@ -67,5 +67,13 @@ JWT sessions in HttpOnly cookies, role-based access (admin vs technician — onl
 admins can change thresholds), and agents authenticate with a shared X-API-Key.
 The frontend is served by FastAPI on the same origin as the API.
 
-Next steps: Chart.js history charts and the uptime summary, then deployment to
-the Ubuntu server.
+History charts are in: each hostname on the dashboard links to a node detail
+page with CPU, memory, disk space, and disk activity charts (Chart.js, bundled
+locally) over a selectable window, and the dashboard summary shows fleet uptime
+computed from check-in coverage. Disk is tracked as two metrics: space used and
+drive activity (Task Manager style), both alertable. Alerts are episode-based:
+one alert per excursion, cleared when the metric recovers below the warning
+threshold.
+
+All core features are complete. Next: deployment to the Ubuntu server, then
+stretch goals.

@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     agent_api_key: str = ""
 
     offline_timeout_seconds: int = 60
+    # How often agents report, used to compute expected check-ins for uptime %.
+    agent_interval_seconds: int = 15
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

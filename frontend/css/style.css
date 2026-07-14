@@ -133,6 +133,34 @@ table.nodes td {
 table.nodes tbody tr:hover td { background: var(--title); color: var(--white); }
 .muted { color: var(--shadow); }
 
+/* Hostname links to the node history page */
+.node-link { color: var(--title); }
+table.nodes tbody tr:hover .node-link { color: var(--white); }
+
+/* Node detail page: header + 2x2 chart grid */
+.node-header h2 { font-size: 14px; margin: 0 0 4px; }
+.node-header p { margin: 0 0 10px; }
+
+.controls label { align-self: center; }
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.chart-panel {
+    background: var(--white);
+    padding: 6px;
+    height: 190px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-title { font-size: 11px; font-weight: bold; margin-bottom: 2px; }
+
+.chart-panel canvas { flex: 1; min-height: 0; }
+
 /* Disk space cell: classic sunken progress bar + colored percentage */
 .disk-cell { display: flex; align-items: center; gap: 6px; }
 

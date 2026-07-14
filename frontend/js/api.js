@@ -73,6 +73,30 @@ async function fetchNodes() {
     return response.json();
 }
 
+async function fetchNode(nodeId) {
+    const response = await apiFetch(`/nodes/${nodeId}`);
+    if (!response.ok) {
+        throw new Error(`Failed to load node: ${response.status}`);
+    }
+    return response.json();
+}
+
+async function fetchNodeMetrics(nodeId, minutes) {
+    const response = await apiFetch(`/nodes/${nodeId}/metrics?minutes=${minutes}`);
+    if (!response.ok) {
+        throw new Error(`Failed to load metric history: ${response.status}`);
+    }
+    return response.json();
+}
+
+async function fetchSummary(minutes) {
+    const response = await apiFetch(`/summary?minutes=${minutes}`);
+    if (!response.ok) {
+        throw new Error(`Failed to load summary: ${response.status}`);
+    }
+    return response.json();
+}
+
 async function fetchAlerts(status) {
     const path = status ? `/alerts?status=${status}` : "/alerts";
     const response = await apiFetch(path);

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node History - Infrastructure Monitoring</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <span class="title-bar-text">Infrastructure Monitoring</span>
+        </div>
+
+        <nav class="menu-bar">
+            <a href="index.html">Dashboard</a>
+            <a href="alerts.html">Alerts</a>
+            <a href="thresholds.html">Thresholds</a>
+            <span class="menu-session" id="session-info"></span>
+        </nav>
+
+        <div class="window-body">
+            <section class="node-header">
+                <h2 id="node-title">Loading node...</h2>
+                <p class="muted" id="node-details"></p>
+            </section>
+
+            <section class="controls">
+                <label for="window-select">History window:</label>
+                <select id="window-select">
+                    <option value="15">Last 15 minutes</option>
+                    <option value="60" selected>Last hour</option>
+                    <option value="360">Last 6 hours</option>
+                    <option value="1440">Last 24 hours</option>
+                </select>
+            </section>
+
+            <div class="charts-grid">
+                <div class="chart-panel sunken-panel">
+                    <span class="chart-title">CPU %</span>
+                    <canvas id="chart-cpu"></canvas>
+                </div>
+                <div class="chart-panel sunken-panel">
+                    <span class="chart-title">Memory %</span>
+                    <canvas id="chart-memory"></canvas>
+                </div>
+                <div class="chart-panel sunken-panel">
+                    <span class="chart-title">Disk Space Used %</span>
+                    <canvas id="chart-disk"></canvas>
+                </div>
+                <div class="chart-panel sunken-panel">
+                    <span class="chart-title">Disk Activity %</span>
+                    <canvas id="chart-disk-io"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span class="status-cell" id="last-updated">Loading...</span>
+            <span class="status-cell">Monitoring System v0.1</span>
+        </div>
+    </div>
+
+    <script src="js/vendor/chart.umd.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/session.js"></script>
+    <script src="js/node.js"></script>
+</body>
+</html>
