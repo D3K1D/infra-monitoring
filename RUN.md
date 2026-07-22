@@ -34,6 +34,16 @@ the LAN). The backend serves the frontend files directly. You will be sent to
 the login page; the first account registered becomes the admin, everyone after
 is a technician.
 
+## Run the regression tests
+
+The tests use an isolated SQLite database and do not touch the MySQL data.
+
+```powershell
+cd backend
+.\venv\Scripts\Activate.ps1
+python -m pytest
+```
+
 ## Stop
 
 Press Ctrl+C in each of the two terminals (or just close them). All code and

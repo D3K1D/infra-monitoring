@@ -18,6 +18,7 @@ backend/      FastAPI app, database models, API routes
     main.py              app entry point, health check, static frontend serving
     routers/             API endpoints (auth, metrics, nodes, alerts, thresholds, summary)
     services/            business logic (metric ingestion, alert engine)
+  tests/                 isolated pytest regression suite
 agent/        psutil metric agent that runs on each monitored machine
 database/     schema.sql to create the MySQL tables
 frontend/     static dashboard (HTML / CSS / JS, Chart.js later)
@@ -54,6 +55,17 @@ The backend serves the frontend on the same port — open http://localhost:8000
 (no separate static server). Register an account on the login page; the first
 account created becomes the admin, later accounts are technicians.
 
+## Tests
+
+The permanent regression suite uses an isolated SQLite database and does not
+touch the development MySQL data.
+
+```bash
+cd backend
+source venv/bin/activate
+python -m pytest
+```
+
 ## Status
 
 The full monitoring pipeline works end to end: agents report CPU/memory/disk to
@@ -75,5 +87,11 @@ drive activity (Task Manager style), both alertable. Alerts are episode-based:
 one alert per excursion, cleared when the metric recovers below the warning
 threshold.
 
-All core features are complete. Next: deployment to the Ubuntu server, then
-stretch goals.
+The agent keeps reporting cycles on the configured interval by subtracting
+metric-collection and request time before sleeping, so the uptime calculation
+is no longer biased by the one-second CPU sample. A permanent regression suite
+covers the backend's core behavior.
+
+Remaining software requirements are admin user management and completion of the
+summary interface. After those pass live acceptance testing, the next phase is
+deployment to the Linux server and then stretch goals.

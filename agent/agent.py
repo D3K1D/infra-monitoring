@@ -74,6 +74,12 @@ def collect_metrics(node_name, location):
     }
 
 
+def remaining_interval(cycle_started, interval):
+    """Seconds left before the next reporting cycle should begin."""
+    elapsed = time.monotonic() - cycle_started
+    return max(interval - elapsed, 0)
+
+
 def main():
     config = load_config()
     api_url = config["API_URL"].rstrip("/")
@@ -86,6 +92,7 @@ def main():
     print(f"Agent starting. Reporting to {endpoint} every {interval}s.")
 
     while True:
+        cycle_started = time.monotonic()
         payload = collect_metrics(config["NODE_NAME"], config["LOCATION"])
         try:
             response = requests.post(endpoint, json=payload, headers=headers, timeout=10)
@@ -102,7 +109,9 @@ def main():
             # Keep running through network/backend outages instead of crashing.
             print(f"Could not reach backend: {e}")
 
-        time.sleep(interval)
+        # Keep reporting cycles interval seconds apart. Metric collection blocks
+        # for one second, so sleeping the full interval would under-report uptime.
+        time.sleep(remaining_interval(cycle_started, interval))
 
 
 if __name__ == "__main__":
