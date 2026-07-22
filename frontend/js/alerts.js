@@ -7,13 +7,19 @@ function severityBadge(severity) {
 }
 
 function statusBadge(status) {
-    return `<span class="badge ${escapeHtml(status)}">${escapeHtml(status)}</span>`;
+    const label = status === "active" ? "unacknowledged" : status;
+    return `<span class="badge ${escapeHtml(status)}">${escapeHtml(label)}</span>`;
+}
+
+function conditionBadge(clearedAt) {
+    const condition = clearedAt ? "recovered" : "ongoing";
+    return `<span class="badge ${condition}">${condition}</span>`;
 }
 
 function renderRows(alerts) {
     const tbody = document.getElementById("alert-rows");
     if (alerts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="muted">No alerts to show.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="muted">No alerts to show.</td></tr>';
         return;
     }
     tbody.innerHTML = alerts
@@ -27,6 +33,7 @@ function renderRows(alerts) {
             <td>${severityBadge(alert.severity)}</td>
             <td>${escapeHtml(alert.hostname)}</td>
             <td>${escapeHtml(alert.trigger_reason)}</td>
+            <td>${conditionBadge(alert.cleared_at)}</td>
             <td>${statusBadge(alert.status)}</td>
             <td>${escapeHtml(formatTimestamp(alert.created_at))}</td>
             <td>${action}</td>

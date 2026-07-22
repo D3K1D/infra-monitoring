@@ -63,6 +63,35 @@ async function fetchCurrentUser() {
     return response.json();
 }
 
+// ----- Admin user management -----
+
+async function fetchUsers() {
+    const response = await apiFetch("/users");
+    if (!response.ok) {
+        throw new Error(await errorMessage(response, `Failed to load users: ${response.status}`));
+    }
+    return response.json();
+}
+
+async function updateUserRole(userId, role) {
+    const response = await apiFetch(`/users/${userId}/role`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role }),
+    });
+    if (!response.ok) {
+        throw new Error(await errorMessage(response, `Failed to update user: ${response.status}`));
+    }
+    return response.json();
+}
+
+async function deleteUserAccount(userId) {
+    const response = await apiFetch(`/users/${userId}`, { method: "DELETE" });
+    if (!response.ok) {
+        throw new Error(await errorMessage(response, `Failed to delete user: ${response.status}`));
+    }
+}
+
 // ----- Dashboard data -----
 
 async function fetchNodes() {

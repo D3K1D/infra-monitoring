@@ -7,16 +7,59 @@ from sqlalchemy.orm import Session
 from .. import models, schemas
 from ..database import get_db
 from ..deps import get_current_user
+from ..services.alert_service import METRIC_FIELDS
 
 router = APIRouter(
     prefix="/api", tags=["nodes"], dependencies=[Depends(get_current_user)]
 )
+
+METRIC_DESCRIPTIONS = {
+    "cpu": ("CPU usage", "high", ""),
+    "memory": ("Memory usage", "high", ""),
+    "disk": ("Disk space", "almost full", " used"),
+    "disk_io": ("Disk activity", "high", ""),
+}
+
+
+def _warning_reasons(metric, thresholds: dict) -> list[str]:
+    """Describe every condition keeping the node in its warning state."""
+    reasons = []
+    for metric_type, field in METRIC_FIELDS.items():
+        threshold = thresholds.get(metric_type)
+        if threshold is None:
+            continue
+
+        value = getattr(metric, field)
+        if value >= threshold.critical_value:
+            severity = "critical"
+            limit = threshold.critical_value
+        elif value >= threshold.warning_value:
+            severity = "warning"
+            limit = threshold.warning_value
+        else:
+            continue
+
+        label, condition, value_suffix = METRIC_DESCRIPTIONS[metric_type]
+        reasons.append(
+            f"{label} is {condition}: {value:.1f}%{value_suffix} "
+            f"({severity} threshold: {limit:g}%)."
+        )
+    return reasons
+
+
+def _node_out(node, latest, thresholds: dict) -> schemas.NodeOut:
+    out = schemas.NodeOut.model_validate(node)
+    out.disk_percent = latest.disk_percent if latest else None
+    if node.status == "warning" and latest is not None:
+        out.warning_reasons = _warning_reasons(latest, thresholds)
+    return out
 
 
 @router.get("/nodes", response_model=List[schemas.NodeOut])
 def list_nodes(db: Session = Depends(get_db)):
     """Return all monitored nodes with their latest disk-space reading."""
     nodes = db.query(models.Node).order_by(models.Node.hostname).all()
+    thresholds = {t.metric_type: t for t in db.query(models.Threshold).all()}
     result = []
     for node in nodes:
         latest = (
@@ -25,9 +68,7 @@ def list_nodes(db: Session = Depends(get_db)):
             .order_by(models.Metric.id.desc())
             .first()
         )
-        out = schemas.NodeOut.model_validate(node)
-        out.disk_percent = latest.disk_percent if latest else None
-        result.append(out)
+        result.append(_node_out(node, latest, thresholds))
     return result
 
 
@@ -43,9 +84,8 @@ def get_node(node_id: int, db: Session = Depends(get_db)):
         .order_by(models.Metric.id.desc())
         .first()
     )
-    out = schemas.NodeOut.model_validate(node)
-    out.disk_percent = latest.disk_percent if latest else None
-    return out
+    thresholds = {t.metric_type: t for t in db.query(models.Threshold).all()}
+    return _node_out(node, latest, thresholds)
 
 
 @router.get("/nodes/{node_id}/metrics", response_model=List[schemas.MetricOut])

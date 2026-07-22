@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -38,6 +38,9 @@ class NodeOut(BaseModel):
     last_seen: Optional[datetime]
     # From the node's most recent reading; None until it has reported once.
     disk_percent: Optional[float] = None
+    # Live threshold conditions from the latest reading. These describe why a
+    # node is currently warning and do not depend on alert acknowledgment.
+    warning_reasons: list[str] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -67,8 +70,8 @@ class ThresholdOut(BaseModel):
 
 
 class ThresholdUpdate(BaseModel):
-    warning_value: float
-    critical_value: float
+    warning_value: float = Field(ge=0, le=100)
+    critical_value: float = Field(ge=0, le=100)
 
 
 # ----- Dashboard summary -----
@@ -78,6 +81,8 @@ class SummaryOut(BaseModel):
     warning: int
     offline: int
     active_alerts: int
+    ongoing_alerts: int
+    recovered_unacknowledged: int
     # None until at least one node has existed long enough to expect readings.
     uptime_percent: Optional[float]
     window_minutes: int
@@ -99,5 +104,10 @@ class UserOut(BaseModel):
     id: int
     username: str
     role: str
+    created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class UserRoleUpdate(BaseModel):
+    role: Literal["admin", "technician"]

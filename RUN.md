@@ -51,8 +51,9 @@ config is saved on disk, and node/metric data persists in MySQL.
 
 ## Notes
 
-- The dashboard has three pages, reachable from the menu bar at the top:
-  Dashboard (nodes), Alerts (list + acknowledge), and Thresholds (edit limits).
+- The dashboard menu has four pages: Dashboard (nodes and summary), Alerts
+  (condition + acknowledgment state), Thresholds (edit limits), and Users
+  (admin-only role/account management). Hostname links open a node's history page.
 - If activating the venv is blocked ("running scripts is disabled"), run this
   once in that terminal, then activate again:
   `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`

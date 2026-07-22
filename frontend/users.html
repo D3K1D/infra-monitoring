@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users - Infrastructure Monitoring</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="window">
+        <div class="title-bar">
+            <span class="title-bar-text">Infrastructure Monitoring</span>
+        </div>
+
+        <nav class="menu-bar">
+            <a href="index.html">Dashboard</a>
+            <a href="alerts.html">Alerts</a>
+            <a href="thresholds.html">Thresholds</a>
+            <a href="users.html" class="active admin-only" hidden>Users</a>
+            <span class="menu-session" id="session-info"></span>
+        </nav>
+
+        <div class="window-body">
+            <p class="muted">
+                Admins can change account roles or remove accounts. At least one
+                administrator must remain, and you cannot delete your own account.
+            </p>
+
+            <div class="sunken-panel">
+                <table class="nodes">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Created</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-rows">
+                        <tr><td colspan="4" class="muted">Loading users...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span class="status-cell" id="last-updated">Loading...</span>
+            <span class="status-cell">Monitoring System v0.1</span>
+        </div>
+    </div>
+
+    <script src="js/util.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/session.js"></script>
+    <script src="js/users.js"></script>
+</body>
+</html>

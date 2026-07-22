@@ -10,6 +10,11 @@ async function initSessionBar() {
     if (!el) return;
     try {
         const user = await sessionUserPromise;
+        if (user.role === "admin") {
+            document.querySelectorAll(".admin-only").forEach((link) => {
+                link.hidden = false;
+            });
+        }
         el.innerHTML = `
             <span>${escapeHtml(user.username)} (${escapeHtml(user.role)})</span>
             <a href="#" id="logout-link">Log out</a>`;

@@ -57,6 +57,29 @@ def test_metric_ingestion_requires_key_and_upserts_one_node(client, db):
     assert node.status == "online"
 
 
+def test_warning_reasons_follow_live_metrics_not_alert_acknowledgment(client):
+    register_and_login(client)
+
+    assert post_metric(client, cpu_percent=80, disk_percent=92).status_code == 201
+    node = client.get("/api/nodes").json()[0]
+    assert node["status"] == "warning"
+    assert node["warning_reasons"] == [
+        "CPU usage is high: 80.0% (warning threshold: 75%).",
+        "Disk space is almost full: 92.0% used (critical threshold: 90%).",
+    ]
+
+    # Human review of the alert must not hide a condition that is still true.
+    for alert in client.get("/api/alerts").json():
+        assert client.post(f"/api/alerts/{alert['id']}/acknowledge").status_code == 200
+    assert client.get("/api/nodes").json()[0]["warning_reasons"] == node["warning_reasons"]
+
+    # The explanation disappears only after the latest metrics recover.
+    assert post_metric(client).status_code == 201
+    recovered = client.get("/api/nodes").json()[0]
+    assert recovered["status"] == "online"
+    assert recovered["warning_reasons"] == []
+
+
 def test_alert_episode_acknowledgment_escalation_recovery_and_reopening(client, db):
     register_and_login(client)
 

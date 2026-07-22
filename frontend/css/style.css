@@ -83,10 +83,11 @@ body {
 .window-body { padding: 10px; }
 
 /* Summary cards as sunken readout panels */
-.summary { display: flex; gap: 10px; margin-bottom: 12px; }
+.summary { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
 
 .card {
     flex: 1;
+    min-width: 125px;
     background: var(--white);
     padding: 10px 12px;
     display: flex;
@@ -96,6 +97,7 @@ body {
 
 .card-value { font-size: 1.9rem; font-weight: bold; color: var(--title); line-height: 1; }
 .card-label { color: #404040; font-size: 11px; }
+.card-detail { color: var(--shadow); font-size: 10px; }
 
 /* Controls */
 .controls { display: flex; gap: 8px; margin-bottom: 12px; }
@@ -200,6 +202,41 @@ table.nodes tbody tr:hover .disk-label { color: var(--white); }
 .badge.warning { color: #9a7000; }
 .badge.offline { color: #b00000; }
 .badge.critical { color: #b00000; }
+.badge.ongoing { color: #b00000; }
+.badge.recovered { color: #008000; }
+
+/* Current node warnings explain themselves on mouse hover or keyboard focus. */
+.status-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+    outline-offset: 2px;
+}
+
+.status-tooltip-text {
+    visibility: hidden;
+    position: absolute;
+    z-index: 10;
+    top: calc(100% + 5px);
+    left: 0;
+    width: max-content;
+    max-width: 320px;
+    padding: 5px 7px;
+    border: 1px solid var(--dark);
+    background: #ffffe1;
+    color: var(--text);
+    box-shadow: 2px 2px 0 var(--shadow);
+    font-size: 11px;
+    font-weight: normal;
+    line-height: 1.4;
+    text-transform: none;
+    white-space: normal;
+}
+
+.status-tooltip-text span { display: block; }
+.status-tooltip-text span + span { margin-top: 3px; }
+.status-tooltip:hover .status-tooltip-text,
+.status-tooltip:focus .status-tooltip-text { visibility: visible; }
 
 /* Alert status labels (no indicator dot) */
 .badge.active { color: #b00000; }
@@ -241,6 +278,19 @@ button:disabled { color: var(--shadow); cursor: default; }
 /* Narrow numeric inputs on the thresholds page */
 table.nodes input[type="number"] {
     width: 70px;
+    background: var(--white);
+    border: none;
+    padding: 3px 5px;
+    font-family: inherit;
+    font-size: 12px;
+    box-shadow:
+        inset -1px -1px var(--white),
+        inset 1px 1px var(--shadow),
+        inset -2px -2px var(--face-light),
+        inset 2px 2px var(--dark);
+}
+
+table.nodes select {
     background: var(--white);
     border: none;
     padding: 3px 5px;

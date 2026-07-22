@@ -16,15 +16,22 @@
             <a href="index.html" class="active">Dashboard</a>
             <a href="alerts.html">Alerts</a>
             <a href="thresholds.html">Thresholds</a>
+            <a href="users.html" class="admin-only" hidden>Users</a>
             <span class="menu-session" id="session-info"></span>
         </nav>
 
         <div class="window-body">
             <section class="summary">
+                <div class="card"><span class="card-value" id="count-total">&ndash;</span><span class="card-label">Total Nodes</span></div>
                 <div class="card"><span class="card-value" id="count-online">&ndash;</span><span class="card-label">Online</span></div>
+                <div class="card"><span class="card-value" id="count-warning">&ndash;</span><span class="card-label">Warning</span></div>
                 <div class="card"><span class="card-value" id="count-offline">&ndash;</span><span class="card-label">Offline</span></div>
-                <div class="card"><span class="card-value" id="count-alerts">&ndash;</span><span class="card-label">Active Alerts</span></div>
-                <div class="card"><span class="card-value" id="uptime">&ndash;</span><span class="card-label">Uptime (24h)</span></div>
+                <div class="card">
+                    <span class="card-value" id="count-alerts">&ndash;</span>
+                    <span class="card-label">Active Alerts</span>
+                    <span class="card-detail" id="alert-breakdown"></span>
+                </div>
+                <div class="card"><span class="card-value" id="uptime">&ndash;</span><span class="card-label" id="uptime-label">Uptime (24 hours)</span></div>
             </section>
 
             <section class="controls">
@@ -34,6 +41,14 @@
                     <option value="online">Online</option>
                     <option value="warning">Warning</option>
                     <option value="offline">Offline</option>
+                </select>
+                <label for="summary-window">Summary:</label>
+                <select id="summary-window">
+                    <option value="15">15 minutes</option>
+                    <option value="60">1 hour</option>
+                    <option value="360">6 hours</option>
+                    <option value="1440" selected>24 hours</option>
+                    <option value="10080">7 days</option>
                 </select>
             </section>
 

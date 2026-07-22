@@ -86,3 +86,25 @@ def test_only_admins_can_update_thresholds(client):
     )
     assert updated.status_code == 200
     assert updated.json()["warning_value"] == 70
+
+
+def test_threshold_values_must_stay_between_zero_and_one_hundred(client):
+    register(client, "admin-user")
+    login(client, "admin-user")
+
+    below_zero = client.put(
+        "/api/thresholds/cpu",
+        json={"warning_value": -1, "critical_value": 90},
+    )
+    above_one_hundred = client.put(
+        "/api/thresholds/cpu",
+        json={"warning_value": 70, "critical_value": 101},
+    )
+    reversed_values = client.put(
+        "/api/thresholds/cpu",
+        json={"warning_value": 90, "critical_value": 80},
+    )
+
+    assert below_zero.status_code == 422
+    assert above_one_hundred.status_code == 422
+    assert reversed_values.status_code == 400

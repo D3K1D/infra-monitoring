@@ -5,7 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from .routers import alerts, auth, metrics, nodes, summary, thresholds
+from .routers import alerts, auth, metrics, nodes, summary, thresholds, users
 from .services import alert_service
 
 FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend"
@@ -27,6 +27,7 @@ app.include_router(nodes.router)
 app.include_router(alerts.router)
 app.include_router(thresholds.router)
 app.include_router(summary.router)
+app.include_router(users.router)
 
 
 @app.get("/api/health")

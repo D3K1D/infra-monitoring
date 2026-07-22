@@ -4,6 +4,13 @@ This log records implementation milestones, verification results, and useful
 demonstration evidence for the final presentation and video. Update it after
 each completed development batch.
 
+## Planned public release
+
+- After final software acceptance and Linux deployment, preserve the current
+  repository as the private development archive.
+- Publish a clean repository snapshot as version 1.0 so the public project starts
+  with the finished application, documentation, and no private planning history.
+
 ## Earlier project milestones
 
 ### Initial monitoring pipeline
@@ -61,3 +68,67 @@ each completed development batch.
   reproducible instead of relying on temporary test scripts.
 - Demonstrate that recovery and acknowledgment are intentionally independent:
   the system records both what the machine did and what the operator reviewed.
+
+## 2026-07-22 - Batch 2: Core feature completion
+
+### Changes
+
+- Added admin-only user management. Admins can list accounts, promote or demote
+  users, and delete other accounts. The backend prevents deletion of the current
+  account and prevents removal of the final administrator.
+- Completed the dashboard summary with Total, Online, Warning, and Offline node
+  counts plus a selectable uptime window from 15 minutes through 7 days.
+- Split the active-alert display into ongoing conditions and recovered events
+  that still require acknowledgment, preserving the independent machine and
+  operator lifecycles.
+- Added 0-100% validation to warning and critical threshold updates.
+- Changed disk-space bar colors to use the administrator's current disk warning
+  and critical thresholds instead of fixed default values.
+- Added the Users page to the existing classic interface and kept it hidden from
+  Technician navigation. Backend role checks remain the security boundary.
+
+### Automated verification
+
+- 18 tests passed using the isolated test database.
+- New coverage verifies admin-only user access, role changes, last-admin
+  protection, account deletion safeguards, threshold bounds, and alert summary
+  breakdowns.
+- Every first-party JavaScript file passed syntax checking.
+
+### Presentation and demo evidence
+
+- Log in as an Admin to demonstrate role changes and account deletion safeguards,
+  then log in as a Technician to show that the Users page and threshold editing
+  are unavailable.
+- Change the dashboard uptime window and show the summary updating without a page
+  reload.
+- Change the disk threshold and show that the node's disk bar uses the configured
+  warning and critical colors.
+- Show an alert recovering before acknowledgment to explain why machine recovery
+  and operator review are tracked separately.
+
+## 2026-07-22 - Batch 2 follow-up: Node warning explanations
+
+### Changes
+
+- Added current warning reasons to the node API using each node's latest metric
+  reading and the administrator's configured thresholds.
+- Added a dashboard tooltip to the WARNING status badge. Hovering over it, or
+  focusing it with the keyboard, lists every current cause such as high CPU,
+  high memory, nearly full disk space, or high disk activity.
+- Kept the explanation independent from alerts. Acknowledging an alert does not
+  remove the node warning or its explanation; only a recovered metric reading
+  does.
+
+### Automated verification
+
+- Added regression coverage for multiple simultaneous warning causes,
+  critical-threshold wording, continued visibility after acknowledgment, and
+  removal after metric recovery.
+- All 19 permanent backend tests passed after the change.
+
+### Presentation and demo evidence
+
+- Trigger more than one threshold on a node and hover over its WARNING status
+  to show that the dashboard explains the live condition without opening the
+  Alerts page.

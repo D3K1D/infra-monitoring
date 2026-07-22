@@ -16,13 +16,14 @@
             <a href="index.html">Dashboard</a>
             <a href="alerts.html" class="active">Alerts</a>
             <a href="thresholds.html">Thresholds</a>
+            <a href="users.html" class="admin-only" hidden>Users</a>
             <span class="menu-session" id="session-info"></span>
         </nav>
 
         <div class="window-body">
             <section class="controls">
                 <select id="status-filter">
-                    <option value="active">Active</option>
+                    <option value="active">Unacknowledged</option>
                     <option value="acknowledged">Acknowledged</option>
                     <option value="all">All</option>
                 </select>
@@ -35,13 +36,14 @@
                             <th>Severity</th>
                             <th>Node</th>
                             <th>Trigger</th>
-                            <th>Status</th>
+                            <th>Condition</th>
+                            <th>Acknowledgment</th>
                             <th>Created</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="alert-rows">
-                        <tr><td colspan="6" class="muted">Loading alerts...</td></tr>
+                        <tr><td colspan="7" class="muted">Loading alerts...</td></tr>
                     </tbody>
                 </table>
             </div>

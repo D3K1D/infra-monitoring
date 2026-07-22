@@ -74,6 +74,13 @@ def test_summary_returns_all_node_and_alert_counts(client, db):
                 node_id=nodes[1].id,
                 severity="warning",
                 trigger_reason="memory test",
+                status="active",
+                cleared_at=now,
+            ),
+            models.Alert(
+                node_id=nodes[2].id,
+                severity="critical",
+                trigger_reason="offline test",
                 status="acknowledged",
             ),
         ]
@@ -87,7 +94,9 @@ def test_summary_returns_all_node_and_alert_counts(client, db):
     assert summary["online"] == 1
     assert summary["warning"] == 1
     assert summary["offline"] == 1
-    assert summary["active_alerts"] == 1
+    assert summary["active_alerts"] == 2
+    assert summary["ongoing_alerts"] == 1
+    assert summary["recovered_unacknowledged"] == 1
     assert summary["window_minutes"] == 60
 
 

@@ -23,9 +23,12 @@ def get_summary(
     for node in nodes:
         counts[node.status] += 1
 
-    active_alerts = (
-        db.query(models.Alert).filter(models.Alert.status == "active").count()
-    )
+    active_query = db.query(models.Alert).filter(models.Alert.status == "active")
+    active_alerts = active_query.count()
+    ongoing_alerts = active_query.filter(models.Alert.cleared_at.is_(None)).count()
+    recovered_unacknowledged = active_query.filter(
+        models.Alert.cleared_at.isnot(None)
+    ).count()
 
     return schemas.SummaryOut(
         total_nodes=len(nodes),
@@ -33,6 +36,8 @@ def get_summary(
         warning=counts["warning"],
         offline=counts["offline"],
         active_alerts=active_alerts,
+        ongoing_alerts=ongoing_alerts,
+        recovered_unacknowledged=recovered_unacknowledged,
         uptime_percent=metric_service.uptime_percent(db, minutes),
         window_minutes=minutes,
     )
