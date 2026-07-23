@@ -105,6 +105,8 @@ so they remain visible after related alerts are acknowledged and disappear only
 when the node reports recovered values.
 
 All committed software features are implemented and covered by the regression
-suite. The remaining software gate is live MySQL and browser acceptance testing;
-after that, the next phase is deployment to the Linux server and then stretch
-goals.
+suite. Live Windows acceptance has also passed against the real MySQL database,
+including authentication guards, nodes, history, summaries, thresholds, alerts,
+users, agent cadence, uptime, and offline/reconnect history. The next phase is
+deployment to the Linux server. The complete operator-facing UI walkthrough will
+be repeated there before the application is declared demo-ready.
