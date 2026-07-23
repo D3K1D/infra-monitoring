@@ -81,13 +81,15 @@ shared X-API-Key. The frontend is served by FastAPI on the same origin as the AP
 
 History charts are in: each hostname on the dashboard links to a node detail
 page with CPU, memory, disk space, and disk activity charts (Chart.js, bundled
-locally) over a selectable window, and the dashboard summary shows fleet uptime
-computed from check-in coverage over a selectable window. The summary includes
-total, online, warning, and offline node counts. Disk is tracked as two metrics:
-space used and drive activity (Task Manager style), both alertable. Alerts are
-episode-based: one alert per excursion, cleared when the metric recovers below
-the warning threshold. The interface shows recovery separately from human
-acknowledgment so recovered events still receive operator review.
+locally) over a selectable window, and the dashboard summary shows fleet
+check-in coverage over a selectable window. The summary includes total, online,
+warning, and offline node counts. Disk is tracked as two metrics: space used and
+drive activity (Task Manager style), both alertable. Alerts are episode-based:
+one alert per excursion, cleared after the metric passes a small recovery margin
+below the warning threshold. Nearby recovered repeats are grouped in the Alerts
+table so threshold flapping remains readable. The interface shows recovery
+separately from human acknowledgment so recovered events still receive operator
+review.
 
 The agent keeps reporting cycles on the configured interval by subtracting
 metric-collection and request time before sleeping, so the uptime calculation

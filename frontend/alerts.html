@@ -29,6 +29,11 @@
                 </select>
             </section>
 
+            <p class="muted">
+                Nearby recovered repeats for the same node and metric are grouped.
+                Occurrences shows how many times the threshold fluctuated.
+            </p>
+
             <div class="sunken-panel">
                 <table class="nodes">
                     <thead>
@@ -36,14 +41,15 @@
                             <th>Severity</th>
                             <th>Node</th>
                             <th>Trigger</th>
+                            <th>Occurrences</th>
                             <th>Condition</th>
                             <th>Acknowledgment</th>
-                            <th>Created</th>
+                            <th>Latest</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="alert-rows">
-                        <tr><td colspan="7" class="muted">Loading alerts...</td></tr>
+                        <tr><td colspan="8" class="muted">Loading alerts...</td></tr>
                     </tbody>
                 </table>
             </div>

@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     offline_timeout_seconds: int = 60
     # How often agents report, used to compute expected check-ins for uptime %.
     agent_interval_seconds: int = 15
+    # A warning must fall this many percentage points below its configured
+    # threshold before its alert episode recovers. This prevents alert flapping
+    # when a metric repeatedly moves just above and below the threshold.
+    alert_recovery_margin_percent: float = 2.0
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

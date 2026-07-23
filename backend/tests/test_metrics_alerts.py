@@ -115,6 +115,31 @@ def test_alert_episode_acknowledgment_escalation_recovery_and_reopening(client, 
     assert len(client.get("/api/alerts").json()) == 3
 
 
+def test_alert_recovery_margin_prevents_threshold_flapping(client, db):
+    assert post_metric(client, memory_percent=80.2).status_code == 201
+    assert db.query(models.Alert).count() == 1
+
+    # A small dip below the 80% warning line changes the live node state, but
+    # does not end the alert episode until memory reaches the 78% recovery line.
+    assert post_metric(client, memory_percent=79.8).status_code == 201
+    db.expire_all()
+    alert = db.query(models.Alert).one()
+    assert alert.cleared_at is None
+    assert db.query(models.Node).one().status == "online"
+
+    # Crossing above warning again reuses the still-open episode.
+    assert post_metric(client, memory_percent=80.3).status_code == 201
+    assert db.query(models.Alert).count() == 1
+
+    assert post_metric(client, memory_percent=78).status_code == 201
+    db.expire_all()
+    assert db.query(models.Alert).one().cleared_at is not None
+
+    # A crossing after a full recovery is a genuinely new episode.
+    assert post_metric(client, memory_percent=80.4).status_code == 201
+    assert db.query(models.Alert).count() == 2
+
+
 def test_offline_alert_is_deduplicated_and_clears_on_check_in(client, db):
     assert post_metric(client).status_code == 201
 

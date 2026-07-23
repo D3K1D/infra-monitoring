@@ -86,8 +86,16 @@ def evaluate_metric(db: Session, node: models.Node, metric: models.Metric) -> No
             crossed = True
             _raise_alert(db, node.id, metric_type, "warning", value, threshold.warning_value)
         else:
-            # Back under the warning limit: this episode is finished.
-            _clear_alerts(db, node.id, metric_type + " ")
+            # Do not immediately close an alert when a reading only dips a
+            # fraction below the warning line. Requiring a small recovery
+            # margin keeps threshold noise in one episode instead of creating
+            # a new alert every time the value crosses back and forth.
+            recovery_limit = max(
+                threshold.warning_value - settings.alert_recovery_margin_percent,
+                0,
+            )
+            if value <= recovery_limit:
+                _clear_alerts(db, node.id, metric_type + " ")
 
     # A node that just reported is online; a crossed threshold downgrades it to
     # warning. Offline is handled separately by the background monitor.

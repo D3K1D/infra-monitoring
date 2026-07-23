@@ -382,7 +382,7 @@ table.nodes select {
         min-width: 0;
     }
 
-    table.nodes { min-width: 720px; }
+    table.nodes { min-width: 820px; }
 
     .charts-grid { grid-template-columns: 1fr; }
 }

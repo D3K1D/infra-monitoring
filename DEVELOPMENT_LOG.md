@@ -422,3 +422,40 @@ each completed development batch.
   assistive-technology users.
 - All first-party JavaScript files passed syntax checks, and all 20 permanent
   regression tests passed after the change.
+
+## 2026-07-23 - Check-in coverage clarification and alert-flapping control
+
+### Final acceptance findings
+
+- The dashboard card labeled Uptime was misunderstood as Linux host power-on
+  time. Its calculation is actually fleet reporting coverage: agent readings
+  received divided by readings expected during the selected window, beginning
+  when each node was first added.
+- The 6-hour and 24-hour results can be the same when every node is newer than
+  both windows because both calculations then use the same effective start
+  times.
+- The laptop's memory usage repeatedly moved just above and below its 80%
+  warning threshold. Immediate recovery created a new alert episode on each
+  crossing and filled the Alerts page with near-identical rows.
+
+### Corrections
+
+- Renamed the summary card to Check-in Coverage and added a concise explanation
+  that it measures received versus expected agent reports.
+- Added a configurable two-percentage-point recovery margin. For an 80% warning
+  threshold, the alert remains one episode until the metric reaches 78% or
+  lower, while the node's live Warning status continues to follow the current
+  80% threshold.
+- Grouped recovered repeats for the same node, metric, severity, and ten-minute
+  period into one displayed row with an Occurrences count. The database retains
+  the individual historical episodes.
+- A grouped row's Acknowledge all action acknowledges every unreviewed episode
+  represented by that row.
+
+### Verification
+
+- Added permanent coverage proving a near-threshold dip and retrigger remain one
+  alert episode, a full recovery clears it, and a later crossing creates a new
+  episode.
+- All first-party JavaScript files passed syntax checks.
+- The permanent regression suite now contains 21 tests, and all 21 passed.
