@@ -265,3 +265,58 @@ each completed development batch.
   requirements used by the permanent regression suite.
 - Kept the versions aligned with `agent/requirements.txt` and documented why
   they are present, ensuring a fresh test environment is self-contained.
+
+### Linux verification
+
+- Pulled deployment-fix commit `467a978` onto the Ubuntu server using its
+  repository-specific read-only deploy key.
+- Created isolated backend and agent environments with CPython 3.12.13 while
+  leaving Ubuntu's Python 3.14.4 system runtime unchanged.
+- Installed the exact pinned dependencies successfully on Linux.
+- All 19 permanent regression tests passed on the server in 7.75 seconds.
+- Verified the agent environment with psutil 5.9.8 and requests 2.32.3.
+- The single Passlib warning concerns Python's deprecated `crypt` module and is
+  expected under Python 3.12; it does not affect the pinned bcrypt-based login
+  path or the test result.
+
+## 2026-07-23 - Linux live backend smoke test
+
+### Real environment verification
+
+- Connected the FastAPI backend to the real MySQL `monitoring` database using a
+  dedicated local database account and secrets stored in a permission-restricted
+  ignored `.env` file.
+- Started Uvicorn on the server and received a successful `/api/health` response
+  from another computer at the server's private LAN address.
+- Loaded the complete dashboard frontend remotely, including its CSS and
+  JavaScript assets.
+- Confirmed that protected API requests returned HTTP 401 before authentication
+  and HTTP 200 after authentication.
+- Registered the first Linux deployment account, which correctly became the
+  administrator, and loaded the authenticated dashboard, thresholds, nodes, and
+  summary endpoints.
+- The initially empty node list is expected because the Linux agent had not yet
+  started reporting.
+
+## 2026-07-23 - Cross-platform timestamp correction
+
+### Deployment finding
+
+- The Linux agent reported successfully and appeared on the authenticated
+  dashboard, but its Last Seen value displayed four hours ahead for an Eastern
+  Time browser.
+- Ubuntu correctly keeps the server clock in UTC. MySQL `DATETIME` values and
+  Python's naive datetime objects do not include a timezone marker, so the API
+  returned a UTC clock value that the browser incorrectly treated as local.
+
+### Correction
+
+- Added API serialization that attaches the server's real UTC offset to every
+  database-backed timestamp before it is sent as JSON.
+- Applied the correction consistently to node last-seen values, metric history,
+  alerts, threshold updates, and user creation times.
+- Preserved the existing database schema and timestamp-writing behavior. This
+  keeps the fix compatible with both the UTC Linux deployment and the
+  Eastern-time Windows development environment.
+- Extended regression coverage to require explicit timezone offsets on node and
+  metric timestamps.

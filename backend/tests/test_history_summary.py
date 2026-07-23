@@ -48,7 +48,17 @@ def test_metric_history_filters_orders_and_returns_404(client, db):
 
     response = client.get(f"/api/nodes/{node.id}/metrics?minutes=60")
     assert response.status_code == 200
-    assert [row["cpu_percent"] for row in response.json()] == [20, 30, 40]
+    rows = response.json()
+    assert [row["cpu_percent"] for row in rows] == [20, 30, 40]
+    assert all(
+        datetime.fromisoformat(row["recorded_at"]).utcoffset() is not None
+        for row in rows
+    )
+
+    node_response = client.get(f"/api/nodes/{node.id}")
+    assert node_response.status_code == 200
+    last_seen = datetime.fromisoformat(node_response.json()["last_seen"])
+    assert last_seen.utcoffset() is not None
     assert client.get("/api/nodes/9999/metrics?minutes=60").status_code == 404
 
 

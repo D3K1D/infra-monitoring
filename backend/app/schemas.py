@@ -1,7 +1,21 @@
 from datetime import datetime
 from typing import Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_serializer
+
+
+def _serialize_local_datetime(value: Optional[datetime]) -> Optional[str]:
+    """Include the server's UTC offset when a database timestamp is naive.
+
+    MySQL DATETIME columns do not retain timezone information. The application
+    and database both write server-local time, so attaching that server's local
+    offset lets browsers convert the value to the viewer's timezone correctly.
+    """
+    if value is None:
+        return None
+    if value.tzinfo is None:
+        value = value.astimezone()
+    return value.isoformat()
 
 
 # ----- Metrics sent in by an agent -----
@@ -26,6 +40,10 @@ class MetricOut(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+    @field_serializer("recorded_at")
+    def serialize_recorded_at(self, value: datetime) -> str:
+        return _serialize_local_datetime(value)
+
 
 # ----- Nodes shown on the dashboard -----
 class NodeOut(BaseModel):
@@ -44,6 +62,10 @@ class NodeOut(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+    @field_serializer("last_seen")
+    def serialize_last_seen(self, value: Optional[datetime]) -> Optional[str]:
+        return _serialize_local_datetime(value)
+
 
 # ----- Alerts shown on the dashboard -----
 class AlertOut(BaseModel):
@@ -58,6 +80,12 @@ class AlertOut(BaseModel):
     acknowledged_by: Optional[int]
     cleared_at: Optional[datetime]
 
+    @field_serializer("created_at", "acknowledged_at", "cleared_at")
+    def serialize_alert_timestamps(
+        self, value: Optional[datetime]
+    ) -> Optional[str]:
+        return _serialize_local_datetime(value)
+
 
 # ----- Thresholds (admin-managed) -----
 class ThresholdOut(BaseModel):
@@ -67,6 +95,10 @@ class ThresholdOut(BaseModel):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("updated_at")
+    def serialize_updated_at(self, value: datetime) -> str:
+        return _serialize_local_datetime(value)
 
 
 class ThresholdUpdate(BaseModel):
@@ -107,6 +139,10 @@ class UserOut(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+    @field_serializer("created_at")
+    def serialize_created_at(self, value: datetime) -> str:
+        return _serialize_local_datetime(value)
 
 
 class UserRoleUpdate(BaseModel):
