@@ -397,3 +397,28 @@ each completed development batch.
   configuration and verifies the server URL, API key, and location.
 - The expanded permanent suite now contains 20 tests, all of which pass on the
   Windows development environment.
+
+## 2026-07-23 - Scrollable table header and warning tooltip correction
+
+### Final UI testing finding
+
+- During screenshot preparation, table column headings scrolled out of view
+  while the node rows were still visible.
+- The dashboard's current-warning explanation was nested inside the table.
+  The table's responsive overflow boundary could therefore crop the explanation
+  when the warning row was close to an edge of the visible area.
+
+### Correction and verification
+
+- Made the shared table headings sticky so Dashboard, Alerts, Thresholds, and
+  Users retain their column labels while their pages scroll.
+- Limited horizontal table overflow to the narrow-screen layout so it does not
+  prevent the headings from sticking to the desktop browser viewport.
+- Moved the warning explanation into one page-level overlay. It is positioned
+  beside the hovered or keyboard-focused WARNING badge, automatically moves
+  above the badge when there is not enough room below, and cannot be clipped by
+  the table.
+- Preserved escaped warning text and added an accessible label for keyboard and
+  assistive-technology users.
+- All first-party JavaScript files passed syntax checks, and all 20 permanent
+  regression tests passed after the change.

@@ -113,12 +113,10 @@ body {
 
 .controls input { flex: 1; }
 
-/* Node table inside a sunken panel. Keep wide tables inside the application
-   window and let narrow/touch screens scroll across their columns. */
+/* Table panel. Horizontal scrolling is enabled only at narrow widths so the
+   column headers can remain sticky to the browser viewport on desktop. */
 .sunken-panel {
     max-width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     background: var(--white);
     padding: 2px;
 }
@@ -126,6 +124,9 @@ body {
 table.nodes { width: 100%; border-collapse: collapse; background: var(--white); }
 
 table.nodes th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
     background: var(--face);
     text-align: left;
     font-weight: normal;
@@ -214,20 +215,19 @@ table.nodes tbody tr:hover .disk-label { color: var(--white); }
 
 /* Current node warnings explain themselves on mouse hover or keyboard focus. */
 .status-tooltip {
-    position: relative;
     display: inline-block;
     cursor: help;
     outline-offset: 2px;
 }
 
-.status-tooltip-text {
-    visibility: hidden;
-    position: absolute;
-    z-index: 10;
-    top: calc(100% + 5px);
-    left: 0;
+/* The live warning explanation is attached to the page instead of the table,
+   so a table's scroll boundary cannot crop it. JavaScript positions it beside
+   the hovered or keyboard-focused WARNING badge. */
+.status-tooltip-overlay {
+    position: fixed;
+    z-index: 1000;
     width: max-content;
-    max-width: 320px;
+    max-width: min(320px, calc(100vw - 16px));
     padding: 5px 7px;
     border: 1px solid var(--dark);
     background: #ffffe1;
@@ -237,13 +237,11 @@ table.nodes tbody tr:hover .disk-label { color: var(--white); }
     font-weight: normal;
     line-height: 1.4;
     text-transform: none;
-    white-space: normal;
+    white-space: pre-line;
+    pointer-events: none;
 }
 
-.status-tooltip-text span { display: block; }
-.status-tooltip-text span + span { margin-top: 3px; }
-.status-tooltip:hover .status-tooltip-text,
-.status-tooltip:focus .status-tooltip-text { visibility: visible; }
+.status-tooltip-overlay[hidden] { display: none; }
 
 /* Alert status labels (no indicator dot) */
 .badge.active { color: #b00000; }
@@ -362,6 +360,11 @@ table.nodes select {
    and narrow browser windows. Tables remain readable through horizontal scroll. */
 @media (max-width: 640px) {
     body { padding: 8px; }
+
+    .sunken-panel {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 
     .menu-bar,
     .controls {
