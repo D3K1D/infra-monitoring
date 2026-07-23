@@ -245,3 +245,23 @@ each completed development batch.
 - Show the monitoring dashboard loading from the Linux server's LAN address.
 - Show the server monitoring itself and receiving a second node's reports.
 - Demonstrate that the backend and agent start automatically after a reboot.
+
+## 2026-07-23 - Linux dependency packaging correction
+
+### Deployment finding
+
+- A clean Python 3.12 backend environment reached test collection successfully,
+  confirming that the pinned FastAPI, Pydantic, Passlib, and bcrypt packages
+  install on Ubuntu 26.04 when isolated from its Python 3.14 system runtime.
+- The permanent test suite then exposed an incomplete test dependency list:
+  `tests/test_agent.py` imports the real agent module, but a fresh backend
+  environment did not contain the agent's `psutil` and `requests` packages.
+- This was a packaging problem rather than an application failure or Python
+  compatibility issue. No production logic was changed.
+
+### Correction
+
+- Added the agent's existing exact `psutil` and `requests` pins to the backend
+  requirements used by the permanent regression suite.
+- Kept the versions aligned with `agent/requirements.txt` and documented why
+  they are present, ensuring a fresh test environment is self-contained.

@@ -12,3 +12,7 @@ python-multipart==0.0.9
 # Permanent API regression suite. Keep exact versions like runtime dependencies.
 httpx==0.28.1
 pytest==9.1.1
+# test_agent.py imports the real metric agent; keep these pins aligned with
+# agent/requirements.txt so a fresh backend test environment is complete.
+psutil==5.9.8
+requests==2.32.3
