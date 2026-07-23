@@ -113,8 +113,15 @@ body {
 
 .controls input { flex: 1; }
 
-/* Node table inside a sunken panel */
-.sunken-panel { background: var(--white); padding: 2px; }
+/* Node table inside a sunken panel. Keep wide tables inside the application
+   window and let narrow/touch screens scroll across their columns. */
+.sunken-panel {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--white);
+    padding: 2px;
+}
 
 table.nodes { width: 100%; border-collapse: collapse; background: var(--white); }
 
@@ -350,3 +357,29 @@ table.nodes select {
 }
 
 .status-cell:first-child { flex: 1; }
+
+/* Preserve the desktop layout while making the application usable on phones
+   and narrow browser windows. Tables remain readable through horizontal scroll. */
+@media (max-width: 640px) {
+    body { padding: 8px; }
+
+    .menu-bar,
+    .controls {
+        flex-wrap: wrap;
+    }
+
+    .menu-session {
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-end;
+    }
+
+    .controls input {
+        flex-basis: 100%;
+        min-width: 0;
+    }
+
+    table.nodes { min-width: 720px; }
+
+    .charts-grid { grid-template-columns: 1fr; }
+}
