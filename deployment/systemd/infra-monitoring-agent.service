@@ -1,0 +1,18 @@
+[Unit]
+Description=Infrastructure Monitoring Agent
+After=network-online.target infra-monitoring-backend.service
+Wants=network-online.target
+Requires=infra-monitoring-backend.service
+
+[Service]
+Type=simple
+User=omni
+Group=omni
+WorkingDirectory=/home/omni/infra-monitoring/agent
+ExecStart=/home/omni/infra-monitoring/agent/venv/bin/python agent.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

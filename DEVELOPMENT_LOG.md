@@ -320,3 +320,24 @@ each completed development batch.
   Eastern-time Windows development environment.
 - Extended regression coverage to require explicit timezone offsets on node and
   metric timestamps.
+
+## 2026-07-23 - Automatic Linux service startup
+
+### Deployment addition
+
+- Added version-controlled systemd service definitions for the FastAPI backend
+  and the Linux server's monitoring agent.
+- Configured the backend to start after the network and MySQL are available.
+- Configured the local agent to start after the backend service.
+- Both processes run as the unprivileged `omni` account, use the existing
+  isolated Python 3.12 environments, and restart automatically after an
+  unexpected exit.
+- Added installation, health-check, log-viewing, and update/restart
+  instructions under `deployment/README.md`.
+
+### Purpose
+
+- Removes the need to keep SSH terminals open or start either program manually.
+- Ensures monitoring resumes automatically after a server reboot.
+- Keeps the deployment configuration repeatable for the final demonstration and
+  the later migration from the temporary hard drive to an SSD.
