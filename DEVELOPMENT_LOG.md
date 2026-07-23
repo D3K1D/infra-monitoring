@@ -377,3 +377,23 @@ each completed development batch.
   Only authorized devices in the private tailnet can reach the HTTPS address.
 - Added repeatable Tailscale installation, verification, and Serve instructions
   to `deployment/README.md`.
+
+## 2026-07-23 - Windows agent configuration compatibility
+
+### Multi-node deployment finding
+
+- While connecting the Windows laptop as a third live node, its configuration
+  visibly contained the correct private server address but the agent continued
+  trying the default `localhost:8000` address.
+- PowerShell had written the configuration as UTF-8 with a byte-order marker
+  (BOM). Because `API_URL` was the first line, the hidden marker became part of
+  the parsed key name and the agent silently retained its localhost default.
+
+### Correction and verification
+
+- Updated the agent configuration reader to accept both standard UTF-8 and
+  UTF-8 files containing the optional Windows BOM.
+- Added a permanent regression test that loads a byte-for-byte BOM-prefixed
+  configuration and verifies the server URL, API key, and location.
+- The expanded permanent suite now contains 20 tests, all of which pass on the
+  Windows development environment.

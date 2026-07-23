@@ -21,7 +21,9 @@ def load_config():
     }
     path = os.path.join(os.path.dirname(__file__), "agent.config")
     if os.path.exists(path):
-        with open(path) as f:
+        # utf-8-sig accepts normal UTF-8 and also removes the optional BOM
+        # written by Windows PowerShell when it creates a UTF-8 config file.
+        with open(path, encoding="utf-8-sig") as f:
             for line in f:
                 line = line.strip()
                 if not line or line.startswith("#") or "=" not in line:
