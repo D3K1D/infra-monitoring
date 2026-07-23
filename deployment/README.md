@@ -49,3 +49,35 @@ After pulling a later application update, restart both services:
 sudo systemctl restart infra-monitoring-backend.service
 sudo systemctl restart infra-monitoring-agent.service
 ```
+
+## Private remote access with Tailscale
+
+Tailscale provides encrypted access without publishing the dashboard or opening
+router ports. Install it on the server and join the same private tailnet as the
+authorized client devices:
+
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+```
+
+After approving the server in the Tailscale authentication page, confirm that
+the service is active and obtain the server's private Tailscale address:
+
+```bash
+sudo systemctl is-active tailscaled
+tailscale ip -4
+```
+
+The dashboard can be reached privately at
+`http://<tailscale-ip>:8000`. For a private HTTPS address without the port
+number, configure Tailscale Serve:
+
+```bash
+sudo tailscale serve --bg 8000
+tailscale serve status
+```
+
+Enable HTTPS certificates when prompted, but leave Tailscale Funnel disabled.
+Serve remains private to authorized tailnet devices; Funnel would publish the
+service to the Internet.

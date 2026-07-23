@@ -341,3 +341,39 @@ each completed development batch.
 - Ensures monitoring resumes automatically after a server reboot.
 - Keeps the deployment configuration repeatable for the final demonstration and
   the later migration from the temporary hard drive to an SSD.
+
+### Linux verification
+
+- Installed both service definitions on the Ubuntu server and confirmed that
+  the backend and agent are enabled and active.
+- Rebooted the server and verified that MySQL, Tailscale, the backend, and the
+  agent returned automatically after Ubuntu started.
+- Loaded the dashboard after the reboot without manually launching either
+  application process. A console login is not required for the systemd
+  services to run.
+- The firmware/GRUB selection screen still needs one final unattended-boot
+  check because Ubuntu was manually selected during this verification.
+
+## 2026-07-23 - Private Tailscale remote access
+
+### Network finding
+
+- The home network uses an Xfinity gateway and a downstream eero mesh on
+  different private address ranges. This creates a likely double-NAT layout and
+  makes conventional port forwarding dependent on access to both network
+  layers.
+- The server's eero-assigned address also changed after a shutdown because a
+  DHCP reservation has not yet been created.
+
+### Secure remote-access result
+
+- Joined the Linux server to the same private Tailscale network as the Windows
+  administration computer.
+- Verified remote SSH and dashboard access through the server's stable private
+  Tailscale address, independent of the server's changing LAN address.
+- Enabled Tailscale Serve for a private HTTPS dashboard address that does not
+  require the application port in the browser.
+- Explicitly left Tailscale Funnel disabled and opened no public router ports.
+  Only authorized devices in the private tailnet can reach the HTTPS address.
+- Added repeatable Tailscale installation, verification, and Serve instructions
+  to `deployment/README.md`.
