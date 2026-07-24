@@ -484,3 +484,20 @@ each completed development batch.
 - Grafana Synthetic Monitoring uses Uptime for the percentage of successful
   check time points and separately documents reachability:
   https://grafana.com/docs/grafana-cloud/testing/synthetic-monitoring/analyze-results/uptime-and-reachability/
+
+## 2026-07-24 - Windows agent launcher
+
+### Usability addition
+
+- Added one location-independent PowerShell launcher for both Windows monitored
+  nodes. It uses the `agent.config` stored beside the agent and automatically
+  finds either a dedicated agent virtual environment or the existing backend
+  virtual environment.
+- The launcher checks for the configuration file, Python environment, psutil,
+  and requests before starting. Its messages identify missing setup without
+  displaying the private API key.
+- Added `START_AGENT.cmd` as a double-click wrapper so the desktop and laptop
+  agents can be started without entering PowerShell commands. The wrapper's
+  execution-policy bypass applies only to that one launcher process.
+- The agent continues to run in the foreground and retains its original
+  behavior: the window stays open while it reports, and Ctrl+C stops it.

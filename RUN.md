@@ -27,6 +27,14 @@ python agent.py
 ```
 Prints a "Sent: cpu=...% mem=...% disk=...%" line every 15 seconds.
 
+**Windows agent shortcut**
+
+On a Windows desktop or laptop that already has its `agent.config` and virtual
+environment, double-click `agent\START_AGENT.cmd`. It launches the reusable
+`start-agent.ps1` script from the correct project location, even when the
+repository is stored in a different folder on each computer. Leave the window
+open while the node is being monitored; press Ctrl+C to stop it.
+
 **Dashboard**
 
 Open http://localhost:8000 (or http://<server-ip>:8000 from another device on
