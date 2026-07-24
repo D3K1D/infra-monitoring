@@ -31,8 +31,7 @@ function renderSummary(summary) {
 
     const summaryWindow = document.getElementById("summary-window");
     const selectedLabel = summaryWindow.options[summaryWindow.selectedIndex].text;
-    document.getElementById("uptime-label").textContent =
-        `Check-in Coverage (${selectedLabel})`;
+    document.getElementById("uptime-label").textContent = `Availability (${selectedLabel})`;
 }
 
 // Sunken progress bar showing how full the node's disk is. Fill and text color

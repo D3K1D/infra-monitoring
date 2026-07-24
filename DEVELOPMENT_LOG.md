@@ -440,8 +440,10 @@ each completed development batch.
 
 ### Corrections
 
-- Renamed the summary card to Check-in Coverage and added a concise explanation
-  that it measures received versus expected agent reports.
+- Labeled the summary card Availability, the standard monitoring term for a
+  percentage of successful checks over a selected period. Kept the precise
+  received-versus-expected calculation in a hover explanation so the visible
+  card stays concise and is not confused with operating-system boot duration.
 - Added a configurable two-percentage-point recovery margin. For an 80% warning
   threshold, the alert remains one episode until the metric reaches 78% or
   lower, while the node's live Warning status continues to follow the current
@@ -459,3 +461,26 @@ each completed development batch.
   episode.
 - All first-party JavaScript files passed syntax checks.
 - The permanent regression suite now contains 21 tests, and all 21 passed.
+
+### Final report reference - availability terminology
+
+- The final dashboard label is **Availability**, followed by the selected time
+  window. This is a standard monitoring term for the percentage of successful
+  checks during a period and is less likely than "Uptime" to be mistaken for
+  the operating system's time since boot.
+- In this project, availability is calculated as agent readings received
+  divided by readings expected at the configured 15-second reporting interval.
+  For a node added partway through the selected window, expected readings begin
+  at that node's creation time.
+- Because of that node-age adjustment, the 6-hour and 24-hour percentages can
+  be identical when every monitored node is newer than six hours. Setup gaps,
+  stopped agents, and missed reports reduce the percentage.
+- Suggested report wording: "Dashboard availability represents fleet reporting
+  availability rather than operating-system boot duration. It compares agent
+  check-ins received with check-ins expected during the selected window,
+  beginning when each node was added."
+- Zabbix calls its percentage-of-time-OK view an Availability report:
+  https://www.zabbix.com/documentation/current/en/manual/web_interface/frontend_sections/reports/availability
+- Grafana Synthetic Monitoring uses Uptime for the percentage of successful
+  check time points and separately documents reachability:
+  https://grafana.com/docs/grafana-cloud/testing/synthetic-monitoring/analyze-results/uptime-and-reachability/
